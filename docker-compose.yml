@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  backend-webapi:
+    build:
+      context: ../MIWG-WebAPI
+      dockerfile: Dockerfile
+    #container_name: webapi
+    ports:
+      - "8080:8080"
+    #environment 설정 : dockcerfile - pom.xml 참고
+    #restart: unless-stopped
+    networks:
+      - ohdsi-network
+
+  frontend-atlas:
+    build:
+      context: ../MIWG-Atlas
+      dockerfile: Dockerfile
+    #container_name: atlas
+    ports:
+      - "8081:8080"
+    #webapi_url localhost:8080/WebAPI/로 고정해둠
+    depends_on:
+      - backend-webapi
+    restart: unless-stopped
+    networks:
+      - ohdsi-network
+
+networks:
+  ohdsi-network:
+
+################ No Internet Connection Environment #########################
+
+# services:
+#   webapi:
+#     image: atlas-webapi:latest
+#     container_name: webapi
+#     ports:
+#       - "8080:8080"
+#     networks:
+#       - ohdsi-network
+
+#   atlas:
+#     image: atlas-atlas:latest
+#     container_name: atlas
+#     ports:
+#       - "8081:8080"
+#     depends_on:
+#       - webapi
+#     networks:
+#       - ohdsi-network
+
+# networks:
+#   ohdsi-network:
